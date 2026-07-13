@@ -1,0 +1,18 @@
+﻿# Virtual environment — never push your package box; others rebuild their own
+.venv/
+
+# Python cache/compiled junk
+__pycache__/
+*.pyc
+
+# Secrets — THE important one. API keys live in .env and must never leave your machine
+.env
+
+# Vector database files we'll create later (big and regenerable)
+.chroma/
+chroma_db/
+data/index/
+
+# OS clutter
+.DS_Store
+Thumbs.db
