@@ -16,3 +16,6 @@ data/index/
 # OS clutter
 .DS_Store
 Thumbs.db
+
+# Local run-history database (regenerable)
+runs.db
