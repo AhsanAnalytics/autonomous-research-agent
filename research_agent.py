@@ -5,8 +5,9 @@ from langgraph.prebuilt import ToolNode
 from app.llm import get_llm
 from app.tools import search_knowledge_base, web_search
 from app.history import save_run
+from app.api_tools import get_exchange_rate
 
-tools = [search_knowledge_base, web_search]
+tools = [search_knowledge_base, web_search, get_exchange_rate]
 llm = get_llm(temperature=0).bind_tools(tools)
 
 SYSTEM = SystemMessage(content=(
