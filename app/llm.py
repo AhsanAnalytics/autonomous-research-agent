@@ -16,7 +16,11 @@ def get_llm(temperature: float = 0.0):
 
     if provider == "groq":
         from langchain_groq import ChatGroq
-        return ChatGroq(model=model or "llama-3.3-70b-versatile", temperature=temperature)
+        return ChatGroq(
+            model=model or "openai/gpt-oss-20b",
+            temperature=temperature,
+            max_retries=5,          # auto-retry on rate limits (429) with backoff
+        )
 
     if provider == "gemini":
         from langchain_google_genai import ChatGoogleGenerativeAI
