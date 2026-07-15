@@ -14,10 +14,15 @@ rather than treat any of it as a black box.
   ordered research plan, executes each step with the tool-using agent, critiques its
   own draft (reflection), does one targeted re-research pass for gaps, and synthesizes
   a cited report that flags its own limitations.
+  - **Multi-agent supervisor**: a supervisor agent coordinates specialists — a Researcher
+  (web + knowledge-base tools), an Analyst (reasoning), and a Writer (report) — routing
+  between them via structured decisions until the report is done, with per-specialist
+  error handling.
 - **Three real tools**:
   - `search_knowledge_base` — the full hybrid RAG retriever over internal docs.
   - `web_search` — live web results via Tavily.
-  - `get_exchange_rate` — an example external API call (currency conversion).
+  - `get_exchange_rate` - `get_exchange_rate` — a live external API call (currency conversion), wired into
+    the research agent with a timeout, host allow-list, and graceful error handling.
 - **Talks to any LLM** through a provider-agnostic factory (`app/llm.py`) — swap
   models/providers by changing one config value, no code changes. (Proven in
   practice: migrated from a deprecated Groq model to `openai/gpt-oss-20b` with a
