@@ -10,6 +10,10 @@ rather than treat any of it as a black box.
 - **Autonomous tool use**: given a question, a LangGraph agent decides which tools
   to call — its internal document store, live web search, or an external API — and
   combines the results into one cited answer. No hardcoded routing.
+- **Plan-and-execute research**: for complex goals, a LangGraph pipeline drafts an
+  ordered research plan, executes each step with the tool-using agent, critiques its
+  own draft (reflection), does one targeted re-research pass for gaps, and synthesizes
+  a cited report that flags its own limitations.
 - **Three real tools**:
   - `search_knowledge_base` — the full hybrid RAG retriever over internal docs.
   - `web_search` — live web results via Tavily.
@@ -57,11 +61,43 @@ the query and each candidate passage together for a sharper final ordering.
 - **Persistence**: SQLite (run history + optional agent-state checkpoints)
 
 ## Setup
+
+**Prerequisites:** Python 3.11+ and free API keys from [Groq](https://console.groq.com)
+(the LLM) and [Tavily](https://tavily.com) (web search).
+
+```bash
+# 1. Clone and enter the project
+git clone https://github.com/<your-username>/autonomous-research-agent.git
+cd autonomous-research-agent
+
+# 2. Create and activate a virtual environment (Windows PowerShell)
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Add your API keys
+#    Copy .env.example to .env, then fill in GROQ_API_KEY and TAVILY_API_KEY
+copy .env.example .env
+
+# 5. Build the vector index from the documents in data/
+python ingest.py
+```
+
+**Try it:**
+
+```bash
+python ask.py "How many vacation days do I get?"                 # RAG Q&A
+python research_agent.py "What laptops can new hires choose?"    # tool-using agent
+python research_pipeline.py "How does our NW-3000 warranty compare to typical routers?"  # research pipeline
+```
 ## Status
 Actively developed. Completed: environment + safe secret handling, first LLM call,
 structured output, a hand-built agent loop, the RAG core, hybrid retrieval
 (BM25 + vector + RRF + reranking + metadata filtering), databases + persistent
-memory, a LangGraph rebuild with checkpointed memory, and real tools with
-autonomous tool choice (RAG, web search, external API). Planned: plan-and-execute
-research, a multi-agent supervisor, a product UI, and a retrieval evaluation set to
+memory, a LangGraph rebuild with checkpointed memory, real tools with autonomous
+tool choice (RAG, web search, external API), and a plan-and-execute research pipeline
+with reflection and cited synthesis. Planned: multi-agent orchestration (a supervisor
+coordinating specialist agents), a product UI, and a retrieval evaluation set to
 measure improvements.
