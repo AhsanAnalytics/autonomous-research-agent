@@ -44,6 +44,38 @@ synonyms; vector matches meaning but fuzzes rare codes. Fusing both hedges again
 knowing the query type in advance. A cross-encoder reranker then reads the query and each
 candidate passage together for a sharper final ordering.
 
+## Evaluation (measured, not assumed)
+A small hand-built eval harness (`eval_retrieval.py`) scores retrieval on a 15-question
+gold set using **hit rate@k** and **MRR**, comparing vector-only, hybrid (RRF), and
+hybrid+rerank.
+
+| Method (k=1) | Hit rate@1 | MRR |
+|---|---|---|
+| Vector-only | 1.00 | 1.000 |
+| Hybrid (RRF) | 0.80 | 0.800 |
+| Hybrid + rerank | 0.87 | 0.867 |
+
+
+**Honest finding:** on this small, clean corpus, plain vector search already ranks the
+correct chunk first every time, so hybrid fusion and reranking add noise rather than
+value here. These techniques are insurance for large, noisy corpora — the harness is
+built to show that crossover as the corpus grows, and to catch regressions. The point:
+retrieval complexity is added based on measurement, not by default.
+
+### Answer quality (LLM-as-judge)
+An LLM-as-judge harness (`eval_answers.py`) scores generated answers on a 5-question set:
+
+| Metric | Score | Meaning |
+|---|---|---|
+| Faithfulness | 100% | every answer claim is supported by the retrieved context (no hallucination) |
+| Correctness | 80% | one answer was true but omitted a secondary detail (a completeness gap, not a hallucination) |
+
+The split matters: **faithfulness** proves the grounding prompt prevents hallucination;
+**correctness** caught a generation-side completeness gap that retrieval metrics can't see —
+pointing the fix at the answer prompt, not the retriever. (The judge is itself an LLM, so
+scores are directional and best for relative comparison and regression-catching, not ground truth.)
+
+
 ## Architecture at a glance
 - **UI → API → agent**: a thin Streamlit UI calls a FastAPI backend, which runs the
   agent. The UI holds no logic — the API is the stable contract, so the front-end could

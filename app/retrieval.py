@@ -39,3 +39,16 @@ def retrieve(query: str, k: int = 4, candidates: int = 8):
     scores = _reranker.predict(pairs)
     ranked = sorted(zip(fused, scores), key=lambda x: x[1], reverse=True)
     return [_by_id[cid] for cid, _ in ranked[:k]]
+def retrieve_vector(query: str, k: int = 4):
+    """Pure semantic (vector) retrieval — the M3 baseline, no keyword, no rerank."""
+    return _vectordb.similarity_search(query, k=k)
+
+
+def retrieve_hybrid(query: str, k: int = 4, candidates: int = 8):
+    """Hybrid BM25 + vector via RRF, but WITHOUT the cross-encoder rerank (M4 fusion only)."""
+    kw_scores = _bm25.get_scores(query.lower().split())
+    kw_order = sorted(range(len(_chunks)), key=lambda i: kw_scores[i], reverse=True)
+    kw_ids = [_chunks[i].metadata["chunk_id"] for i in kw_order[:candidates]]
+    vec_ids = [h.metadata["chunk_id"] for h in _vectordb.similarity_search(query, k=candidates)]
+    fused = _rrf([kw_ids, vec_ids])[:k]
+    return [_by_id[cid] for cid in fused]
