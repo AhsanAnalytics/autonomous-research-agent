@@ -1,4 +1,5 @@
 ﻿# Autonomous Research & Report Agent
+![CI](https://github.com/AhsanAnalytics/autonomous-research-agent/actions/workflows/ci.yml/badge.svg)
 
 An autonomous AI agent that researches questions by combining its own private
 knowledge base (RAG) with live web search and external APIs, then answers with
@@ -151,3 +152,10 @@ a LangGraph rebuild with checkpointed memory, real tools with autonomous tool ch
 a supervisor multi-agent system, and a FastAPI + Streamlit product wrapper. Planned:
 an evaluation set to measure retrieval/agent quality, plus shipping polish (tests, CI,
 Docker).
+
+## What I'd do next
+- Scale retrieval to Qdrant or pgvector as the corpus grows (the eval harness would
+  show hybrid/rerank overtaking vector search on a larger, noisier corpus).
+- Add response streaming to the UI so the agent's steps appear live.
+- Deploy the API + UI to a free-tier host for a public demo link.
+- Expand the eval set and add agent-completion metrics.
