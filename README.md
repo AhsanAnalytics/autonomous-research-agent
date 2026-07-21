@@ -107,7 +107,7 @@ scores are directional and best for relative comparison and regression-catching,
 
 ```bash
 # 1. Clone and enter the project
-git clone https://github.com/<your-username>/autonomous-research-agent.git
+git clone https://github.com/<AhsanAnalytics>/autonomous-research-agent.git
 cd autonomous-research-agent
 
 # 2. Create and activate a virtual environment (Windows PowerShell)
